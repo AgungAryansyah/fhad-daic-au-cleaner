@@ -1,7 +1,7 @@
 [project]
 name = "fhad-daic-au-cleaner"
 version = "0.1.0"
-description = "Add your description here"
+description = "DAIC-WOZ AU feature cleaning pipeline for federated health affective detection research."
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
@@ -10,3 +10,6 @@ dependencies = [
     "scikit-learn>=1.8.0",
     "scipy>=1.17.1",
 ]
+
+[tool.setuptools.packages.find]
+where = ["src"]
