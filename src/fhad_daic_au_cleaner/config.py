@@ -1,10 +1,12 @@
 from pathlib import Path
 
-DATA_ROOT = Path("data")
-OUTPUT_ROOT = Path("output")
+PROJECT_ROOT = Path(__file__).parent.parent.parent
 
-TRAIN_LABEL_CSV = Path("labels/train_split_Depression_AVEC2017.csv")
-DEV_LABEL_CSV = Path("labels/dev_split_Depression_AVEC2017.csv")
+DATA_ROOT = PROJECT_ROOT / "data"
+OUTPUT_ROOT = PROJECT_ROOT / "output"
+
+TRAIN_LABEL_CSV = PROJECT_ROOT / "labels/train_split_Depression_AVEC2017.csv"
+DEV_LABEL_CSV = PROJECT_ROOT / "labels/dev_split_Depression_AVEC2017.csv"
 
 EXCLUDED_SESSIONS = {342, 394, 398, 460, 373, 444, 451, 458, 480, 402}
 
