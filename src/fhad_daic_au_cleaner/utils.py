@@ -22,6 +22,10 @@ def get_openface_csv_path(session_dir: Path, session_id: int) -> Path:
     return session_dir / "features" / f"{session_id}_OpenFace2.1.0_Pose_gaze_AUs.csv"
 
 
+def get_egemaps_csv_path(session_dir: Path, session_id: int) -> Path:
+    return session_dir / "features" / f"{session_id}_OpenSMILE2.3.0_egemaps.csv"
+
+
 def load_csv(path: Path, **kwargs) -> pd.DataFrame | None:
     logger = get_logger(__name__)
     try:
