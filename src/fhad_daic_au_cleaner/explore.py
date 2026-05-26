@@ -8,10 +8,13 @@ from .config import (
     CONFIDENCE_THRESHOLD,
     DATA_ROOT,
     DEV_LABEL_CSV,
+    EGEMAPS_FEATURE_COLS,
+    EGEMAPS_SENTINEL,
     EXCLUDED_SESSIONS,
     TRAIN_LABEL_CSV,
 )
 from .utils import (
+    get_egemaps_csv_path,
     get_logger,
     get_openface_csv_path,
     get_session_dir,
@@ -99,6 +102,38 @@ def explore(data_root: Path, train_label: Path, dev_label: Path) -> None:
             print(f"  {split}: {len(df)} rows, columns: {list(df.columns)}")
         else:
             print(f"  {split}: FAILED to load from {label_path}")
+
+    print(f"\n[eGeMAPS File Presence Check]")
+    missing_egemaps = []
+    for sid in active_ids:
+        sdir = get_session_dir(data_root, sid)
+        if not get_egemaps_csv_path(sdir, sid).exists():
+            missing_egemaps.append(sid)
+
+    if missing_egemaps:
+        print(f"  Sessions missing eGeMAPS CSV: {missing_egemaps}")
+    else:
+        print(f"  All active sessions have eGeMAPS CSV.")
+
+    print(f"\n[Sample eGeMAPS CSV]")
+    if sample_id:
+        sdir = get_session_dir(data_root, sample_id)
+        egemaps_path = get_egemaps_csv_path(sdir, sample_id)
+        df = load_csv(egemaps_path, sep=";")
+        if df is not None:
+            df.columns = df.columns.str.strip()
+            print(f"  Session {sample_id}: {len(df)} rows x {len(df.columns)} cols")
+            print(f"  Columns: {list(df.columns)}")
+            feature_cols_present = [c for c in EGEMAPS_FEATURE_COLS if c in df.columns]
+            missing_feat = [c for c in EGEMAPS_FEATURE_COLS if c not in df.columns]
+            print(f"  Feature cols present: {len(feature_cols_present)}/{len(EGEMAPS_FEATURE_COLS)}")
+            if missing_feat:
+                print(f"  Missing feature cols: {missing_feat}")
+            print(f"  Sentinel ({EGEMAPS_SENTINEL}) counts per column:")
+            for col in feature_cols_present:
+                count = (df[col] == EGEMAPS_SENTINEL).sum()
+                if count > 0:
+                    print(f"    {col}: {count} ({100*count/len(df):.1f}%)")
 
     print("\n" + "=" * 60 + "\n")
 
