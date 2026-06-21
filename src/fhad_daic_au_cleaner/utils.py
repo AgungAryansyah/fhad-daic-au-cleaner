@@ -1,7 +1,9 @@
 import logging
 from pathlib import Path
 
+import numpy as np
 import pandas as pd
+import scipy.io as sio
 
 
 def get_logger(name: str) -> logging.Logger:
@@ -24,6 +26,25 @@ def get_openface_csv_path(session_dir: Path, session_id: int) -> Path:
 
 def get_egemaps_csv_path(session_dir: Path, session_id: int) -> Path:
     return session_dir / "features" / f"{session_id}_OpenSMILE2.3.0_egemaps.csv"
+
+
+def get_cnn_mat_path(session_dir: Path, session_id: int, variant: str = "ResNet") -> Path:
+    return session_dir / "features" / f"{session_id}_CNN_{variant}.mat"
+
+
+def get_spectrogram_csv_path(session_dir: Path, session_id: int, variant: str) -> Path:
+    return session_dir / "features" / f"{session_id}_{variant}.csv"
+
+
+def load_mat(path: Path) -> dict | None:
+    logger = get_logger(__name__)
+    try:
+        return sio.loadmat(str(path))
+    except FileNotFoundError:
+        logger.error("File not found: %s", path)
+    except Exception as e:
+        logger.error("Failed to load .mat %s: %s", path, e)
+    return None
 
 
 def load_csv(path: Path, **kwargs) -> pd.DataFrame | None:
