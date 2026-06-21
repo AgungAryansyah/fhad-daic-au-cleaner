@@ -39,7 +39,7 @@ POSE_COLS = [
     "pose_Tx", "pose_Ty", "pose_Tz",
 ]
 
-FEATURE_COLS = ["frame", "timestamp"] + AU_REGRESSION_COLS + AU_BINARY_COLS + POSE_COLS
+FEATURE_COLS = ["frame", "timestamp", "confidence"] + AU_REGRESSION_COLS + AU_BINARY_COLS + POSE_COLS
 
 METADATA_COLS = ["participant_id", "phq_score", "phq_binary"]
 
