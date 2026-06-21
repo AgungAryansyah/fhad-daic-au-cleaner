@@ -26,6 +26,10 @@ logger = get_logger("run_cleaning")
 MODALITY_TASKS: dict[str, list[dict]] = {
     "au": [{"label": "AU", "suffix": "", "fn": clean_session, "kw": {}}],
     "egemaps": [{"label": "eGeMAPS", "suffix": "_egemaps", "fn": clean_egemaps_session, "kw": {}}],
+    "au_egemaps": [
+        {"label": "AU", "suffix": "", "fn": clean_session, "kw": {}},
+        {"label": "eGeMAPS", "suffix": "_egemaps", "fn": clean_egemaps_session, "kw": {}},
+    ],
     "cnn_resnet": [{"label": "CNN_ResNet", "suffix": "_cnn_resnet", "fn": clean_cnn_session, "kw": {"variant": "ResNet"}}],
     "cnn_vgg": [{"label": "CNN_VGG", "suffix": "_cnn_vgg", "fn": clean_cnn_session, "kw": {"variant": "VGG"}}],
     "cnn": [
@@ -139,7 +143,7 @@ def main() -> None:
     parser.add_argument(
         "--modality",
         choices=[
-            "au", "egemaps", "cnn_resnet", "cnn_vgg", "cnn",
+            "au", "egemaps", "au_egemaps", "cnn_resnet", "cnn_vgg", "cnn",
             "densenet", "vgg16", "spectrogram",
             "all", "all_files",
         ],
