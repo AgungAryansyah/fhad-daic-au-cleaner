@@ -2,11 +2,17 @@ from pathlib import Path
 
 PROJECT_ROOT = Path(__file__).parent.parent.parent
 
-DATA_ROOT = PROJECT_ROOT / "data"
+_DATASET_ROOT = PROJECT_ROOT
+for candidate in (PROJECT_ROOT, PROJECT_ROOT.parent):
+    if (candidate / "data").exists() and (candidate / "labels").exists():
+        _DATASET_ROOT = candidate
+        break
+
+DATA_ROOT = _DATASET_ROOT / "data"
 OUTPUT_ROOT = PROJECT_ROOT / "output"
 
-TRAIN_LABEL_CSV = PROJECT_ROOT / "labels/train_split_Depression_AVEC2017.csv"
-DEV_LABEL_CSV = PROJECT_ROOT / "labels/dev_split_Depression_AVEC2017.csv"
+TRAIN_LABEL_CSV = _DATASET_ROOT / "labels" / "train_split_Depression_AVEC2017.csv"
+DEV_LABEL_CSV = _DATASET_ROOT / "labels" / "dev_split_Depression_AVEC2017.csv"
 
 EXCLUDED_SESSIONS = {342, 394, 398, 460, 373, 444, 451, 458, 480, 402}
 
