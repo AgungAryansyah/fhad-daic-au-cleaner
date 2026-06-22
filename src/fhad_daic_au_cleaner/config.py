@@ -11,8 +11,18 @@ for candidate in (PROJECT_ROOT, PROJECT_ROOT.parent):
 DATA_ROOT = _DATASET_ROOT / "data"
 OUTPUT_ROOT = PROJECT_ROOT / "output"
 
-TRAIN_LABEL_CSV = _DATASET_ROOT / "labels" / "train_split_Depression_AVEC2017.csv"
-DEV_LABEL_CSV = _DATASET_ROOT / "labels" / "dev_split_Depression_AVEC2017.csv"
+
+def _resolve_label_path(labels_dir: Path, candidates: list[str]) -> Path:
+    for name in candidates:
+        p = labels_dir / name
+        if p.exists():
+            return p
+    return labels_dir / candidates[0]
+
+
+_LABELS_DIR = _DATASET_ROOT / "labels"
+TRAIN_LABEL_CSV = _resolve_label_path(_LABELS_DIR, ["train_split.csv", "train_split_Depression_AVEC2017.csv"])
+DEV_LABEL_CSV = _resolve_label_path(_LABELS_DIR, ["dev_split.csv", "dev_split_Depression_AVEC2017.csv"])
 
 EXCLUDED_SESSIONS = {342, 394, 398, 460, 373, 444, 451, 458, 480, 402}
 
