@@ -65,9 +65,12 @@ def clean_spectrogram_session(
 
     df.columns = [f"{col_prefix}_{i}" for i in range(df.shape[1])]
 
-    df.insert(0, "frame", range(len(df)))
-    df.insert(0, "phq_binary", phq_binary)
-    df.insert(0, "phq_score", phq_score)
-    df.insert(0, "participant_id", session_id)
+    meta = pd.DataFrame({
+        "participant_id": [session_id] * len(df),
+        "phq_score": [phq_score] * len(df),
+        "phq_binary": [phq_binary] * len(df),
+        "frame": range(len(df)),
+    })
+    df = pd.concat([meta, df], axis=1)
 
     return df, report

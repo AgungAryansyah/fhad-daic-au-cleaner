@@ -58,9 +58,13 @@ def clean_egemaps_session(
     cols_to_keep = [c for c in EGEMAPS_KEEP_COLS if c in df.columns]
     df = df[cols_to_keep].copy()
 
-    df.insert(0, "phq_binary", phq_binary)
-    df.insert(0, "phq_score", phq_score)
-    df.insert(0, "participant_id", session_id)
+    n = len(df)
+    meta = pd.DataFrame({
+        "participant_id": [session_id] * n,
+        "phq_score": [phq_score] * n,
+        "phq_binary": [phq_binary] * n,
+    })
+    df = pd.concat([meta, df], axis=1)
 
     report["final_frames"] = len(df)
     return df, report

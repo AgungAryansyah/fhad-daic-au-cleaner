@@ -76,9 +76,12 @@ def clean_cnn_session(
     cols = [f"{col_prefix}_{i}" for i in range(embedding_dim)]
     df = pd.DataFrame(arr, columns=cols)
 
-    df.insert(0, "frame", range(n_frames))
-    df.insert(0, "phq_binary", phq_binary)
-    df.insert(0, "phq_score", phq_score)
-    df.insert(0, "participant_id", session_id)
+    meta = pd.DataFrame({
+        "participant_id": [session_id] * n_frames,
+        "phq_score": [phq_score] * n_frames,
+        "phq_binary": [phq_binary] * n_frames,
+        "frame": range(n_frames),
+    })
+    df = pd.concat([meta, df], axis=1)
 
     return df, report
