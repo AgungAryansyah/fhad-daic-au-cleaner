@@ -49,7 +49,13 @@ POSE_COLS = [
     "pose_Tx", "pose_Ty", "pose_Tz",
 ]
 
-FEATURE_COLS = ["frame", "timestamp", "confidence"] + AU_REGRESSION_COLS + AU_BINARY_COLS + POSE_COLS
+GAZE_COLS = [
+    "gaze_0_x", "gaze_0_y", "gaze_0_z",
+    "gaze_1_x", "gaze_1_y", "gaze_1_z",
+    "gaze_angle_x", "gaze_angle_y",
+]
+
+FEATURE_COLS = ["frame", "timestamp", "confidence"] + AU_REGRESSION_COLS + AU_BINARY_COLS + POSE_COLS + GAZE_COLS
 
 METADATA_COLS = ["participant_id", "phq_score", "phq_binary"]
 
