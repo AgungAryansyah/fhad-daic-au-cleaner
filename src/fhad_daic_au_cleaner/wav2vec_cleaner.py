@@ -3,7 +3,8 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 import torch
-import torchaudio
+from scipy.io import wavfile
+from torchaudio.functional import resample
 
 from .config import EXCLUDED_SESSIONS, WAV2VEC_CHUNK_SECONDS, WAV2VEC_COL_PREFIX, WAV2VEC_MODEL_ID
 from .utils import get_audio_wav_path, get_logger, get_session_dir
@@ -50,13 +51,18 @@ def clean_wav2vec_session(
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model, hidden_size = _load_wav2vec_model(device)
 
-    waveform, sample_rate = torchaudio.load(str(wav_path))
+    sample_rate, data = wavfile.read(str(wav_path))
 
-    if waveform.shape[0] > 1:
-        waveform = waveform.mean(dim=0, keepdim=True)
+    if data.dtype.kind != "f":
+        data = data.astype(np.float32) / float(np.iinfo(data.dtype).max)
+
+    if data.ndim > 1:
+        data = data.mean(axis=1)
+
+    waveform = torch.from_numpy(data).unsqueeze(0)
 
     if sample_rate != 16000:
-        waveform = torchaudio.functional.resample(waveform, sample_rate, 16000)
+        waveform = resample(waveform, sample_rate, 16000)
         sample_rate = 16000
 
     report["duration_seconds"] = waveform.shape[1] / sample_rate
