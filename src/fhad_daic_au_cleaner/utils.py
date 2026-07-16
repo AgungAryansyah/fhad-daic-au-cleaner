@@ -24,6 +24,10 @@ def get_openface_csv_path(session_dir: Path, session_id: int) -> Path:
     return session_dir / "features" / f"{session_id}_OpenFace2.1.0_Pose_gaze_AUs.csv"
 
 
+def get_audio_wav_path(session_dir: Path, session_id: int) -> Path:
+    return session_dir / f"{session_id}_AUDIO.wav"
+
+
 def get_egemaps_csv_path(session_dir: Path, session_id: int) -> Path:
     return session_dir / "features" / f"{session_id}_OpenSMILE2.3.0_egemaps.csv"
 
