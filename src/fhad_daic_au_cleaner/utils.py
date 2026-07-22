@@ -36,6 +36,10 @@ def get_cnn_mat_path(session_dir: Path, session_id: int, variant: str = "ResNet"
     return session_dir / "features" / f"{session_id}_CNN_{variant}.mat"
 
 
+def get_transcript_csv_path(session_dir: Path, session_id: int) -> Path:
+    return session_dir / f"{session_id}_TRANSCRIPT.csv"
+
+
 def get_spectrogram_csv_path(session_dir: Path, session_id: int, variant: str) -> Path:
     return session_dir / "features" / f"{session_id}_{variant}.csv"
 

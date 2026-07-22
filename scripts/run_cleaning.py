@@ -19,6 +19,7 @@ from fhad_daic_au_cleaner.config import (
 )
 from fhad_daic_au_cleaner.egemaps_cleaner import clean_egemaps_session
 from fhad_daic_au_cleaner.spectrogram_cleaner import clean_spectrogram_session
+from fhad_daic_au_cleaner.transcript_cleaner import clean_transcript_session
 from fhad_daic_au_cleaner.utils import get_logger, list_session_ids, load_csv
 from fhad_daic_au_cleaner.wav2vec_cleaner import clean_wav2vec_session
 
@@ -57,6 +58,7 @@ MODALITY_TASKS: dict[str, list[dict]] = {
         {"label": "VGG16", "suffix": "_vgg16", "fn": clean_spectrogram_session, "kw": {"variant": "vgg16"}},
     ],
     "wav2vec": [{"label": "Wav2Vec2", "suffix": "_wav2vec", "fn": clean_wav2vec_session, "kw": {}}],
+    "transcript": [{"label": "Transcript", "suffix": "_transcript", "fn": clean_transcript_session, "kw": {}}],
 }
 
 
@@ -147,7 +149,7 @@ def main() -> None:
         choices=[
             "au", "egemaps", "au_egemaps", "cnn_resnet", "cnn_vgg", "cnn",
             "densenet", "vgg16", "spectrogram",
-            "all", "all_files", "wav2vec",
+            "all", "all_files", "wav2vec", "transcript",
         ],
         default="all",
     )
