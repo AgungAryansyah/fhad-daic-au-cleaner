@@ -2,14 +2,7 @@ from pathlib import Path
 
 import pandas as pd
 
-from .config import (
-    EXCLUDED_SESSIONS,
-    TRANSCRIPT_KEEP_COLS,
-    TRANSCRIPT_SPEAKER_COL,
-    TRANSCRIPT_START_TIME_COL,
-    TRANSCRIPT_END_TIME_COL,
-    TRANSCRIPT_VALUE_COL,
-)
+from .config import EXCLUDED_SESSIONS
 from .utils import get_logger, get_session_dir, get_transcript_csv_path, load_csv
 
 logger = get_logger(__name__)
@@ -23,8 +16,7 @@ def clean_transcript_session(
 ) -> tuple[pd.DataFrame | None, dict]:
     report = {
         "participant_id": session_id,
-        "original_utterances": 0,
-        "participant_utterances": 0,
+        "rows": 0,
         "phq_score": phq_score,
         "phq_binary": phq_binary,
         "status": "ok",
@@ -44,25 +36,6 @@ def clean_transcript_session(
 
     df.columns = df.columns.str.strip()
 
-    required_cols = [TRANSCRIPT_SPEAKER_COL, TRANSCRIPT_VALUE_COL]
-    missing = [c for c in required_cols if c not in df.columns]
-    if missing:
-        logger.warning("Session %d transcript missing columns: %s", session_id, missing)
-        report["status"] = f"missing_columns:{','.join(missing)}"
-        return None, report
-
-    report["original_utterances"] = len(df)
-
-    participant_mask = df[TRANSCRIPT_SPEAKER_COL].str.lower() == "participant"
-    df = df[participant_mask]
-
-    if df.empty:
-        report["status"] = "empty_after_filtering"
-        return None, report
-
-    cols_to_keep = [c for c in TRANSCRIPT_KEEP_COLS if c in df.columns]
-    df = df[cols_to_keep].copy()
-
     n = len(df)
     meta = pd.DataFrame({
         "participant_id": [session_id] * n,
@@ -71,5 +44,5 @@ def clean_transcript_session(
     })
     df = pd.concat([meta, df], axis=1)
 
-    report["participant_utterances"] = len(df)
+    report["rows"] = len(df)
     return df, report
