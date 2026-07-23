@@ -18,7 +18,9 @@ def clean_session(
     data_root: Path,
     phq_score: float | None,
     phq_binary: int | None,
+    excluded_sessions: frozenset[int] | None = None,
 ) -> tuple[pd.DataFrame | None, dict]:
+    _excluded = excluded_sessions if excluded_sessions is not None else EXCLUDED_SESSIONS
     report = {
         "participant_id": session_id,
         "original_frames": 0,
@@ -30,7 +32,7 @@ def clean_session(
         "status": "ok",
     }
 
-    if session_id in EXCLUDED_SESSIONS:
+    if session_id in _excluded:
         report["status"] = "excluded"
         return None, report
 

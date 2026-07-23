@@ -83,7 +83,9 @@ def run(
     dev_label: Path,
     output_root: Path,
     modality: str,
+    include_excluded: bool = False,
 ) -> None:
+    excluded_sessions = frozenset() if include_excluded else None
     tasks = MODALITY_TASKS.get(modality)
     if not tasks:
         logger.error("Unknown modality: %s", modality)
@@ -113,7 +115,7 @@ def run(
         for task in tasks:
             label = task["label"]
             suffix = task["suffix"]
-            cleaned_df, report = task["fn"](sid, data_root, phq_score, phq_binary, **task["kw"])
+            cleaned_df, report = task["fn"](sid, data_root, phq_score, phq_binary, excluded_sessions=excluded_sessions, **task["kw"])
             report["split"] = split
             if cleaned_df is not None:
                 out_path = out_dir / f"{sid}{suffix}_clean.csv"
@@ -153,8 +155,9 @@ def main() -> None:
         ],
         default="all",
     )
+    parser.add_argument("--include-excluded", action="store_true", help="Process sessions normally excluded from the dataset")
     args = parser.parse_args()
-    run(args.data_root, args.train_label, args.dev_label, args.output_root, args.modality)
+    run(args.data_root, args.train_label, args.dev_label, args.output_root, args.modality, include_excluded=args.include_excluded)
 
 
 if __name__ == "__main__":

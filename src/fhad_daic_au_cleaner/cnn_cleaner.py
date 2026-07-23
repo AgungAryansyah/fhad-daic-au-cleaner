@@ -34,7 +34,9 @@ def clean_cnn_session(
     phq_binary: int | None,
     variant: str = "ResNet",
     col_prefix: str | None = None,
+    excluded_sessions: frozenset[int] | None = None,
 ) -> tuple[pd.DataFrame | None, dict]:
+    _excluded = excluded_sessions if excluded_sessions is not None else EXCLUDED_SESSIONS
     if col_prefix is None:
         col_prefix = CNN_RESNET_COL_PREFIX if variant == "ResNet" else CNN_VGG_COL_PREFIX
 
@@ -49,7 +51,7 @@ def clean_cnn_session(
         "status": "ok",
     }
 
-    if session_id in EXCLUDED_SESSIONS:
+    if session_id in _excluded:
         report["status"] = "excluded"
         return None, report
 
